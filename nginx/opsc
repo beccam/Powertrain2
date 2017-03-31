@@ -1,0 +1,11 @@
+server {
+	listen 80;
+
+	index index.html;
+
+	server_name opsc.powertraindemo.com;
+
+	location / {
+		proxy_pass http://54.202.165.184:8888/;    
+	}
+}
