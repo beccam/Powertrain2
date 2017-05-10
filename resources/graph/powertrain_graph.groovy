@@ -1,4 +1,4 @@
-/system.graph('powertrain_graph').option("graph.replication_config").set("{'class' : 'NetworkTopologyStrategy', 'Analytics + Graph' : 3, 'Cassandra + Graph' : 3 ,'Search + Graph' : 3}").ifNotExists().create()
+/system.graph('powertrain_graph').option("graph.replication_config").ifNotExists().create()
 //system.graph('summitDemo').ifNotExists().create()
 
 schema.config().option('graph.schema_mode').set('Development')
