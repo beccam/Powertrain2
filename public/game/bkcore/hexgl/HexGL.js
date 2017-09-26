@@ -70,6 +70,8 @@ bkcore.hexgl.HexGL = function(opts)
 
 	this.godmode = opts.godmode == undefined ? true : opts.godmode;
 
+	this.autodrive = opts.autodrive == undefined ? true : opts.autodrive;
+
 	this.hud = null;
 
 	this.gameplay = null;
@@ -405,6 +407,7 @@ bkcore.hexgl.HexGL.prototype.createMesh = function(parent, geometry, x, y, z, ma
 bkcore.hexgl.HexGL.prototype.tweakShipControls = function()
 {
 	var c = this.components.shipControls;
+    c.autodrive = this.autodrive;
 	if(this.difficulty == 1)
 	{
 		c.airResist = 0.035;

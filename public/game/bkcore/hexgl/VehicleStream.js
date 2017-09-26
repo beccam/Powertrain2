@@ -15,6 +15,7 @@ bkcore.hexgl.VehicleStream = function()
 
 bkcore.hexgl.VehicleStream.prototype.sendEvent = function(name, value)
 {
+    if (this.ws.readyState == 1){ 
     this.ws.send(JSON.stringify({
       type: "event",
       vehicle: window.hexGL.player,
@@ -22,11 +23,13 @@ bkcore.hexgl.VehicleStream.prototype.sendEvent = function(name, value)
       value: "" + value,
       elapsed_time: this.timer.time.elapsed,
     }));
+    }
 };
 
 bkcore.hexgl.VehicleStream.prototype.sendLocation = function(lat, lon, elevation, speed, acceleration)
 {
     console.log(this.timer.time.elapsed)
+    if (this.ws.readyState == 1){ 
     this.ws.send(JSON.stringify({
       type: "location",
       vehicle: window.hexGL.player,
@@ -41,4 +44,5 @@ bkcore.hexgl.VehicleStream.prototype.sendLocation = function(lat, lon, elevation
       acceleration: acceleration,
       elapsed_time: this.timer.time.elapsed
     }));
+    }
 };

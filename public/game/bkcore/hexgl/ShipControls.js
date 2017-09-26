@@ -541,6 +541,133 @@ bkcore.hexgl.ShipControls.prototype.update = function(dt)
 	//Update listener position
 	bkcore.Audio.setListenerPos(this.movement);
 	bkcore.Audio.setListenerVelocity(this.currentVelocity);
+
+
+    //AUTODRIVE
+    if(this.autodrive){
+    if(! (!this.collisionDetection || !this.collisionMap || !this.collisionMap.loaded)) {
+
+        //Breaking is for losers
+        this.key.forward = true
+
+        var x = Math.round(this.collisionMap.pixels.width / 2 + this.dummy.position.x * this.collisionPixelRatio);
+        var z = Math.round(this.collisionMap.pixels.height / 2 + this.dummy.position.z * this.collisionPixelRatio);
+        var pos = new THREE.Vector3(x, 0, z);
+
+        //console.log(x, z, this.collisionMap.pixels.width, this.collisionMap.pixels.height, this.dummy.position.x, this.dummy.position.z)
+
+
+        this.autoDriveStatus = ["AUTODRIVING","","","","", this.angular,"", this.dummy];
+
+        frontDetectionBounds = 25.0 + (this.speed * 5);
+        sideDetectionBounds = 10.0
+        fsideDetectionBounds = 15.0 + (this.speed * 3);
+
+        this.key.right=false;
+        this.key.left=false;
+        this.key.ltrigger = false;
+        this.key.rtrigger = false;
+
+        // Detection
+        this.repulsionVLeft.set(0.3, 0, 1);
+        this.repulsionVRight.set(-0.3, 0, 1);
+        this.dummy.matrix.rotateAxis(this.repulsionVLeft);
+        this.dummy.matrix.rotateAxis(this.repulsionVRight);
+        this.repulsionVLeft.multiplyScalar(sideDetectionBounds-1);
+        this.repulsionVRight.multiplyScalar(sideDetectionBounds-1);
+
+        var sidelPos = this.repulsionVLeft.addSelf(pos).clone();
+        var siderPos = this.repulsionVRight.addSelf(pos).clone();
+        var sidelCol = this.collisionMap.getPixel(Math.round(sidelPos.x), Math.round(sidelPos.z)).r;
+        var siderCol = this.collisionMap.getPixel(Math.round(siderPos.x), Math.round(siderPos.z)).r;
+
+        this.repulsionVLeft.set(0.08, 0, 1);
+        this.repulsionVLeft.normalize();
+        this.repulsionVRight.set(-0.08, 0, 1);
+        this.repulsionVRight.normalize();
+        this.dummy.matrix.rotateAxis(this.repulsionVLeft);
+        this.dummy.matrix.rotateAxis(this.repulsionVRight);
+        this.repulsionVLeft.multiplyScalar(fsideDetectionBounds);
+        this.repulsionVRight.multiplyScalar(fsideDetectionBounds);
+
+        var fsidelPos = this.repulsionVLeft.addSelf(pos).clone();
+        var fsiderPos = this.repulsionVRight.addSelf(pos).clone();
+        var fsidelCol = this.collisionMap.getPixel(Math.round(fsidelPos.x), Math.round(fsidelPos.z)).r;
+        var fsiderCol = this.collisionMap.getPixel(Math.round(fsiderPos.x), Math.round(fsiderPos.z)).r;
+
+        this.repulsionVLeft.set(0.08, 0, 1);
+        this.repulsionVLeft.normalize();
+        this.repulsionVRight.set(-0.08, 0, 1);
+        this.repulsionVRight.normalize();
+        this.dummy.matrix.rotateAxis(this.repulsionVLeft);
+        this.dummy.matrix.rotateAxis(this.repulsionVRight);
+        this.repulsionVLeft.multiplyScalar(frontDetectionBounds);
+        this.repulsionVRight.multiplyScalar(frontDetectionBounds);
+
+        var frontlPos = this.repulsionVLeft.addSelf(pos).clone();
+        var frontrPos = this.repulsionVRight.addSelf(pos).clone();
+        var frontlCol = this.collisionMap.getPixel(Math.round(frontlPos.x), Math.round(frontlPos.z)).r;
+        var frontrCol = this.collisionMap.getPixel(Math.round(frontrPos.x), Math.round(frontrPos.z)).r;
+
+
+        
+        frontl = frontlCol < 255; 
+        frontr = frontrCol < 255;
+        frontOff = (frontl && frontr)
+        
+        fsidel = fsidelCol < 255;
+        fsider = fsiderCol < 255;
+        fsideOff = (fsidel && fsider);
+        
+        sidel = sidelCol < 255;
+        sider = siderCol < 255;
+        sideOff = (sidel && sider);
+
+        this.autoDriveStatus[1] = frontl;
+        this.autoDriveStatus[2] = fsidel;
+        this.autoDriveStatus[3] = sideOff;
+        this.autoDriveStatus[8] = [
+            [sidelPos.x, sidelPos.z],
+            [siderPos.x, siderPos.z],
+            [fsidelPos.x, fsidelPos.z],
+            [fsiderPos.x, fsiderPos.z],
+            [frontlPos.x, frontlPos.z],
+            [frontrPos.x, frontrPos.z]
+        ];
+
+        if (!frontOff) {
+            if (frontl) {// Turn right
+                this.key.right = true;
+                this.autoDriveStatus[4] = "Right"
+            } else if (frontr) {// Turn left
+                this.key.left = true;
+                this.autoDriveStatus[4] = "Left"
+            }
+        } else if (!sideOff) {
+            if (fsidel) {
+                this.autoDriveStatus[4] = "Right AB";
+                this.key.right = true;
+                this.key.rtrigger = true;
+            } else if (fsider) {
+                this.autoDriveStatus[4] = "Left AB";
+                this.key.ltrigger = true;
+                this.key.left = true
+            }
+        } else {
+            if (siderCol > sidelCol) {
+                this.autoDriveStatus[4] = "Right Emergency";
+                this.key.front = false;
+                this.key.right = true;
+                this.key.rtrigger = true;
+            } else {
+                this.autoDriveStatus[4] = "Left Emergency";
+                this.key.front = false;
+                this.key.ltrigger = true;
+                this.key.left = true
+            }
+        }
+    }
+    }
 };
 
 bkcore.hexgl.ShipControls.prototype.teleport = function(pos, quat)
