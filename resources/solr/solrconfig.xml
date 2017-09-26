@@ -330,8 +330,7 @@
         <filterCache
                 class="solr.search.SolrFilterCache"
                 autowarmCount="90%"
-                lowWaterMarkMB="128"
-                highWaterMarkMB="256" />
+                />
 
         <!-- Query Result Cache
 
