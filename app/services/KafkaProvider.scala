@@ -16,7 +16,7 @@ class KafkaProvider @Inject()(appLifecycle: ApplicationLifecycle, config:Configu
   lazy val get = {
 
     val host: String = config.getString("powertrain.kafkaHost").getOrElse("172.31.14.225:9092")
-    val topic: String = config.getString("powertrain.kafkaHost").getOrElse("vehicle_events")
+    val topic: String = config.getString("powertrain.kafkaTopic").getOrElse("vehicle_events")
 
     //val host: String = "localhost:9092"
     //val topic: String = "vehicle_events"
