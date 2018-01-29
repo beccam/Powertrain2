@@ -102,9 +102,9 @@ class GitHubByUser:
                                    '"dateJoined", created_at,'
                                    '"company", company).next()}',
                                    {'account': login.lower(),
-                                    'location': account['location'],
+                                    'location': (account['location'] or ''),
                                     'created_at': account['created_at'],
-                                    'company': account['company']})  # uses the default execution profile
+                                    'company': (account['company'] or '')})  # uses the default execution profile
 
         # if account (Vertex) exists but edge does not, create edge
         if attending:
