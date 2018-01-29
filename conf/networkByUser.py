@@ -143,6 +143,13 @@ class GitHubByUser:
         cluster = Cluster(nodes, execution_profiles={EXEC_PROFILE_GRAPH_DEFAULT: ep})
         metadata = cluster.metadata
         self.session = cluster.connect()
+
+        self.session.execute_graph('g.V().hasLabel("cassandra_summit").has("name", name)'
+                            '.tryNext().orElseGet {'
+                            'g.addV(label, "cassandra_summit", "name", name).next()}',
+                            {'name': "cassandra_summit",})  # uses the default execution profile
+
+
         log.info('Connected to cluster: ' + metadata.cluster_name)
         for host in metadata.all_hosts():
             log.info('Datacenter: %s; Host: %s; Rack: %s',
