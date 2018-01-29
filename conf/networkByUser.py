@@ -181,7 +181,7 @@ def main():
         contactNode = sys.argv[1]
         githubAcct = str(sys.argv[2])
 
-    f = file('application.cfg')
+    f = file("application.cfg")
     cfg = Config(f)
     tokens = cfg.tokens
 
