@@ -300,18 +300,9 @@
           })
           $("#standard_login").on("click", function(){
             var github_code = $("#username").val()
-
             $.ajax({
-              'url':  '/username/' + github_code,
-              success: function(data){
-                $("#playerName").val(data);
-                $.ajax({
-                  'url': '/populateGraph/' + data,
-                  async: true,
-                })
-                  //login_successful();
-
-              }
+              'url': '/populateGraph/' + github_code,
+              async: true,
             })
 
             $("#playerName").val($("#username").val());
