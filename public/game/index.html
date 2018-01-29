@@ -280,22 +280,10 @@
           jQuery.noConflict();
 
           // var github_code = getParameterByName("code")
-          var github_code = $("#username").val()
 
           // if(github_code != null)
           // {
-          $.ajax({
-            'url':  '/username/' + github_code,
-            success: function(data){
-              $("#playerName").val(data);
-              $.ajax({
-                'url': '/populateGraph/' + data,
-                async: true,
-              })
-                //login_successful();
 
-            }
-          })
           // }else{
               // $('#loginModal').modal('show');
           // }
@@ -311,6 +299,21 @@
             window.open("leaderboard.html", "_self");
           })
           $("#standard_login").on("click", function(){
+            var github_code = $("#username").val()
+
+            $.ajax({
+              'url':  '/username/' + github_code,
+              success: function(data){
+                $("#playerName").val(data);
+                $.ajax({
+                  'url': '/populateGraph/' + data,
+                  async: true,
+                })
+                  //login_successful();
+
+              }
+            })
+
             $("#playerName").val($("#username").val());
             $('#loginModal').modal('hide');
             //login_successful();
