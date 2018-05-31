@@ -28,7 +28,7 @@ case class LeaderboardResults(vehicle_id: String, elapsed_time: String)
 class PowertrainRestController @Inject()(configuration: play.api.Configuration, system: ActorSystem, cassandraConfig:CassandraConfig) extends Controller {
 
   def populateGraph(username: String) = Action {
-    val pyPath = getClass.getClassLoader.getResource("networkByUser.py").getPath.replace("/private","")
+    val pyPath = getClass.getClassLoader.getResource("networkByUser.py").getPath
     Logger.info(s"pyPath for networkByUser.py $pyPath")
     Logger.info(s"Username: " + username)
     Logger.info(s"Host: " + configuration.getString("powertrain.dse_graph_host").get)
