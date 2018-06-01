@@ -82,7 +82,7 @@ class GitHubByUser:
                 for i in range(0, len(languagesList), 1):
                     self.session.execute_graph('g.V().hasLabel("coding_language").has("name",lang)'
                                                '.tryNext().orElseGet {'
-                                               'g.addV(label,"coding_language","name",lang)}',
+                                               'g.addV("coding_language").property("name",lang)}',
                                                    {"lang": languagesList[i]})
 
                     self.session.execute_graph('v1 = g.V().hasLabel("coding_language").has("name",lang).next()\n' +
@@ -98,9 +98,9 @@ class GitHubByUser:
 
         self.session.execute_graph('g.V().hasLabel("github_user").has("account", account)'
                                    '.tryNext().orElseGet {'
-                                   'g.addV(label, "github_user", "account", account, "location", location,'
-                                   '"dateJoined", created_at,'
-                                   '"company", company).next()}',
+                                   'g.addV("github_user").property("account", account).property("location", location)'
+                                   '.property("dateJoined", created_at)'
+                                   '.property("company", company).next()}',
                                    {'account': login.lower(),
                                     'location': (account['location'] or ''),
                                     'created_at': account['created_at'],
@@ -115,7 +115,7 @@ class GitHubByUser:
 
         self.session.execute_graph('g.V().hasLabel("github_user").has("account", account)'
                                    '.tryNext().orElseGet {'
-                                   'g.addV(label, "github_user", "account", account).next()}',
+                                   'g.addV("github_user").property("account", account).next()}',
                                    {'account': destinationID.lower()})
 
         try:
@@ -134,20 +134,18 @@ class GitHubByUser:
         return result
 
     def connect(self, nodes):
-        graph_name = 'cassandra_summit'
-        local_datacenter = 'Cassandra + Graph'
-        # local_datacenter = 'GraphAnalytics'
+        graph_name = "powertrain_graph"
         ep = GraphExecutionProfile(graph_options=GraphOptions(graph_name=graph_name),
-                                   load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=local_datacenter),
                                    consistency_level=ConsistencyLevel.LOCAL_QUORUM)
         cluster = Cluster(nodes, execution_profiles={EXEC_PROFILE_GRAPH_DEFAULT: ep})
         metadata = cluster.metadata
         self.session = cluster.connect()
 
-        self.session.execute_graph('g.V().hasLabel("cassandra_summit").has("name", name)'
-                            '.tryNext().orElseGet {'
-                            'g.addV(label, "cassandra_summit", "name", name).next()}',
-                            {'name': "cassandra_summit",})  # uses the default execution profile
+        query ="".join(['g.V().hasLabel("cassandra_summit").has("name", name)', 
+                            '.tryNext().orElseGet {', 
+                            'g.addV("cassandra_summit").property("name", name).next()}'])
+        self.session.execute_graph(query,
+                            {'name': "cassandra_summit"})  # uses the default execution profile
 
 
         log.info('Connected to cluster: ' + metadata.cluster_name)
@@ -181,7 +179,7 @@ def main():
         contactNode = sys.argv[1]
         githubAcct = str(sys.argv[2])
 
-    f = file("application.cfg")
+    f = file("/tmp/Powertrain2/powertrain2-1.0-SNAPSHOT/conf/application.cfg")
     cfg = Config(f)
     tokens = cfg.tokens
 
@@ -189,6 +187,7 @@ def main():
     # connect to DSE Cluster and loop through GitHub API calls
     #
     client = GitHubByUser()
+    print(contactNode)
     client.connect([contactNode])
 
     # if needed create 'login' vertex and edge to Summit
