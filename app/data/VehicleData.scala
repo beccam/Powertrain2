@@ -20,14 +20,12 @@ case class VehicleLocation(vehicle: String, location: Location, speed: Double, a
     //when acceleration gets parse
     val speed_str:String = if (speed == 0.0) "0" else speed.toString
     val acc_str = if (acceleration == 0.0)  "0" else acceleration.toString
-    //How do we want to format lat long?
-    val latLong = s"${location.getLatLong.getLat}"
+    val latLong = s"${location.getLatLong.getLat}:${location.getLatLong.getLon}"
     val time_period:Timestamp = new Timestamp(System.currentTimeMillis())
     val collect_time:Timestamp = new Timestamp(System.currentTimeMillis())
 
     //what this means has been lost from to much copying and pasting
-    val tile1: String = GeoHash.encodeHash(location.getLatLong, 4)
-    val tile2: String = GeoHash.encodeHash(location.getLatLong, 7)
+    val tile2: String = GeoHash.encodeHash(location.getLatLong.getLat, location.getLatLong.getLon, 4)
 
     val vl_str = s"$vehicle,$latLong,${location.getElevation},$speed_str,$acc_str,${time_period.getTime},${collect_time.getTime},$tile2,${elapsed_time}"
     vl_str
