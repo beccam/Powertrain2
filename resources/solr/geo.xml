@@ -10,7 +10,9 @@
         </fieldType>
         <fieldType class="org.apache.solr.schema.StrField" name="StrField"/>
         <fieldType class="org.apache.solr.schema.TrieFloatField" name="TrieFloatField"/>
-        <fieldType name="location" class=""solr.LatLonPointSpatialField"" subFieldSuffix="_coordinate" positionIncrementGap="0"/>
+        <fieldType name="location" class="solr.LatLonPointSpatialField" subFieldSuffix="_coordinate"/>
+        positionIncrementGap="0"/>
+
 
 
     </types>
