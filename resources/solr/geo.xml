@@ -26,7 +26,7 @@
         <field indexed="true" docValues="true" multiValued="false" name="mileage" stored="true" type="TrieFloatField"/>
         <field indexed="true" docValues="true" multiValued="false" name="elevation" stored="true" type="TextField"/>
         <field indexed="true" docValues="true" multiValued="false" name="fuel_level" stored="true" type="TrieFloatField"/>
-        <field name="lat_long" docValues="true" type="location" indexed="true" stored="true" multiValued="false"/>
+        <field name="lat_long" docValues="false" type="location" indexed="true" stored="true" multiValued="false"/>
         <dynamicField name="*_coordinate" type="TrieDoubleField" indexed="true" stored="false"/>
     </fields>
     <defaultSearchField>vehicle_id</defaultSearchField>
