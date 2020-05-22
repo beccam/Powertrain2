@@ -326,7 +326,7 @@
                    and old cache.
           -->
         <filterCache
-                class="solr.search.SolrFilterCache"
+                class="solr.SolrFilterCache"
                 autowarmCount="90%"
                 lowWaterMarkMB="128"
                 highWaterMarkMB="256" />
