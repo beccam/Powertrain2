@@ -13,6 +13,8 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
+  "com.datastax.cassandra" % "cassandra-driver-core" % "3.0.0-rc1",
+  "com.datastax.cassandra" % "cassandra-driver-mapping" % "3.0.0-rc1",
   "com.github.davidmoten" % "geo" % "0.7.1",
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.11-M3",
   "com.github.jkutner" % "env-keystore" % "0.1.2",
